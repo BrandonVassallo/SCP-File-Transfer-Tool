@@ -54,8 +54,8 @@ def prompt_user():
     # Create the ping button
     ttk.Button(mainframe, text="Ping", command=lambda: ping_IP(IP_addr, ping_status)).grid(column=3, row=2, sticky=W)
 
-    # Create the batch file button
-    ttk.Button(mainframe, text="Create Batch File", command=lambda: write_batch_file(User, IP_addr, file_path, dest_path)).grid(column=2, row=6, sticky=W)
+    # Create the run SCP button
+    ttk.Button(mainframe, text="Initalize SCP", command=lambda: run_scp(User, IP_addr, file_path, dest_path)).grid(column=2, row=6, sticky=W)
 
     root.columnconfigure(0, weight=1)           # Fill in any extra space if resized
     root.rowconfigure(0, weight=1)	
@@ -115,15 +115,14 @@ def check_IP(ip_addr):
 
 
 
-def write_batch_file(SV_username: tk.StringVar, SV_ip_addr: tk.StringVar, SV_file_path: tk.StringVar, SV_dest_path: tk.StringVar):
+def run_scp(SV_username: tk.StringVar, SV_ip_addr: tk.StringVar, SV_file_path: tk.StringVar, SV_dest_path: tk.StringVar):
     usename = SV_username.get()
     IP_address = SV_ip_addr.get()
     file_path = SV_file_path.get()
     dest_path = SV_dest_path.get()
 
-    bat_file = open("C:/Users/Test/Desktop/SCP_TRANSFER_FILE.bat", "w")
     command = f"scp {file_path} {usename}@{IP_address}:{dest_path}"
-    bat_file.write(command)
+    subprocess.run(command, shell=True)
 
 
 
