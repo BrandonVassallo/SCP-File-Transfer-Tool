@@ -22,34 +22,40 @@ def prompt_user():
     mainframe = ttk.Frame(root, padding=(3,3,12,12))        # Create the parent, "mainframe"
     mainframe.grid(column=0, row=0, sticky=(N, W, E, S))    # Create the grid
 
+    # Create the Username input
+    User = StringVar()
+    User_entry = ttk.Entry(mainframe, width=20, textvariable=User)
+    User_entry.grid(column=2, row=1, sticky=W)
+
     # Create the IP Address input
     IP_addr = StringVar()
-    IP_entry = ttk.Entry(mainframe, width=7, textvariable=IP_addr)
-    IP_entry.grid(column=2, row=1, sticky=(W, E))
+    IP_entry = ttk.Entry(mainframe, width=14, textvariable=IP_addr)
+    IP_entry.grid(column=2, row=2, sticky=W)
 
     # Create the File Path input
     file_path = StringVar()
-    FP_entry = ttk.Entry(mainframe, width=7, textvariable=file_path)
-    FP_entry.grid(column=2, row=3, sticky=(W, E))
+    FP_entry = ttk.Entry(mainframe, width=40, textvariable=file_path)
+    FP_entry.grid(column=2, row=4, sticky=(W, E))
 
     # Create the Destination Path input
     dest_path = StringVar()
-    DEST_entry = ttk.Entry(mainframe, width=7, textvariable=dest_path)
-    DEST_entry.grid(column=2, row=4, sticky=(W, E))
+    DEST_entry = ttk.Entry(mainframe, width=40, textvariable=dest_path)
+    DEST_entry.grid(column=2, row=5, sticky=(W, E))
 
     # Create the text labels
-    ttk.Label(mainframe, text="IP Address of Device: ").grid(column=1, row=1, sticky=E)
-    ttk.Label(mainframe, text="File Path: ").grid(column=1, row=3, sticky=E)
-    ttk.Label(mainframe, text="Destination Path: ").grid(column=1, row=4, sticky=E)
+    ttk.Label(mainframe, text="Username for Device: ").grid(column=1, row=1, sticky=E)
+    ttk.Label(mainframe, text="IP Address of Device: ").grid(column=1, row=2, sticky=E)
+    ttk.Label(mainframe, text="File Path: ").grid(column=1, row=4, sticky=E)
+    ttk.Label(mainframe, text="Destination Path: ").grid(column=1, row=5, sticky=E)
 
     ping_status = ttk.Label(mainframe, text="Waiting to Ping...")
-    ping_status.grid(column=4, row=1, sticky=E)
+    ping_status.grid(column=4, row=2, sticky=E)
 
     # Create the ping button
-    ttk.Button(mainframe, text="Ping", command=lambda: ping_IP(IP_addr, ping_status)).grid(column=3, row=1, sticky=W)
+    ttk.Button(mainframe, text="Ping", command=lambda: ping_IP(IP_addr, ping_status)).grid(column=3, row=2, sticky=W)
 
     # Create the batch file button
-    ttk.Button(mainframe, text="Create Batch File", command=write_batch_file).grid(column=2, row=5, sticky=W)
+    ttk.Button(mainframe, text="Create Batch File", command=lambda: write_batch_file(User, IP_addr, file_path, dest_path)).grid(column=2, row=6, sticky=W)
 
     root.columnconfigure(0, weight=1)           # Fill in any extra space if resized
     root.rowconfigure(0, weight=1)	
@@ -109,8 +115,15 @@ def check_IP(ip_addr):
 
 
 
-def write_batch_file():
-    pass
+def write_batch_file(SV_username: tk.StringVar, SV_ip_addr: tk.StringVar, SV_file_path: tk.StringVar, SV_dest_path: tk.StringVar):
+    usename = SV_username.get()
+    IP_address = SV_ip_addr.get()
+    file_path = SV_file_path.get()
+    dest_path = SV_dest_path.get()
+
+    bat_file = open("C:/Users/Test/Desktop/SCP_TRANSFER_FILE.bat", "w")
+    command = f"scp {file_path} {usename}@{IP_address}:{dest_path}"
+    bat_file.write(command)
 
 
 
