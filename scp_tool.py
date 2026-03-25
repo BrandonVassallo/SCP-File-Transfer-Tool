@@ -25,6 +25,7 @@ def prompt_user():
     # Create the Username input
     User = StringVar()
     User_entry = ttk.Entry(mainframe, width=20, textvariable=User)
+    User_entry.insert(0, "bvassallo")
     User_entry.grid(column=2, row=1, sticky=W)
 
     # Create the IP Address input
@@ -53,6 +54,10 @@ def prompt_user():
 
     # Create the ping button
     ttk.Button(mainframe, text="Ping", command=lambda: ping_IP(IP_addr, ping_status)).grid(column=3, row=2, sticky=W)
+
+    # Create the Destination Path Auto Fill buttons
+    ttk.Button(mainframe, text="Update Plugins", command=lambda: update_autofill(DEST_entry)).grid(column=3, row=5, sticky=W)
+    ttk.Button(mainframe, text="~/Desktop", command=lambda: desktop_autofill(DEST_entry)).grid(column=4, row=5, sticky=W)
 
     # Create the run SCP button
     ttk.Button(mainframe, text="Initalize SCP", command=lambda: run_scp(User, IP_addr, file_path, dest_path)).grid(column=2, row=6, sticky=W)
@@ -114,14 +119,28 @@ def check_IP(ip_addr):
     return Status.SUCCESS
 
 
+def update_autofill(DEST_entry: ttk.Entry):
+    DEST_entry.delete(0, tk.END)
+    DEST_entry.insert(0, "~/minecraft/server/plugins/update")   # Autofill the plugins path
+
+def desktop_autofill(DEST_entry: ttk.Entry):
+    DEST_entry.delete(0, tk.END)
+    DEST_entry.insert(0, "~/Desktop")   # Autofill the Desktop Path
 
 def run_scp(SV_username: tk.StringVar, SV_ip_addr: tk.StringVar, SV_file_path: tk.StringVar, SV_dest_path: tk.StringVar):
-    usename = SV_username.get()
+    usename = SV_username.get()     # Get each field for string use
     IP_address = SV_ip_addr.get()
     file_path = SV_file_path.get()
+
+    # Remove any quotes when copying over a filepath
+    if file_path[0] == "\"":
+        file_path = file_path[1:]
+    if file_path[-1] == "\"":
+        file_path = file_path[:-1]
+
     dest_path = SV_dest_path.get()
 
-    command = f"scp {file_path} {usename}@{IP_address}:{dest_path}"
+    command = f"scp {file_path} {usename}@{IP_address}:{dest_path}" # Run the SCP command in the shell
     subprocess.run(command, shell=True)
 
 
